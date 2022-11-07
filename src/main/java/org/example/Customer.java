@@ -16,7 +16,12 @@ import java.util.Arrays;
 public class Customer {
 
     int [][] jobSequence;
-    int time_contract;
+
+    public Customer(int[][] jobSequence) {
+        this.jobSequence = jobSequence;
+    }
+
+    private int time_contract;
 
 
     public void set_contract(int [] contract){
