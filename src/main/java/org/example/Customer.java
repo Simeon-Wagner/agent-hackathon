@@ -19,10 +19,10 @@ public class Customer {
 
     public Customer(int[][] jobSequence) {
         this.jobSequence = jobSequence;
+        time_contract = 0;
     }
 
     private int time_contract;
-
 
     public void set_contract(int [] contract){
         time_contract = get_time(contract);
@@ -32,15 +32,15 @@ public class Customer {
         if( get_time(proposal) < time_contract){
             return true;
         }
-        return true;
+        return false;
     }
-    private int get_time( int [] sequence){
+    public int get_time( int [] proposal){
         //Zeilen sind Jobs
 
-        int [] end_point = calculate_end_point(jobSequence[sequence[0]]);
+        int [] end_point = calculate_end_point(jobSequence[proposal[0]]);
 
-        for (int i = 1; i < sequence.length; i++) {
-            int [] temp = calculate_temp(end_point, jobSequence[sequence[i]]);
+        for (int i = 1; i < proposal.length; i++) {
+            int [] temp = calculate_temp(end_point, jobSequence[proposal[i]]);
            while(! approve(temp, end_point)) {
                 for(int j = 0; j< temp.length; j++){
                     temp[j]++;
@@ -55,7 +55,7 @@ public class Customer {
     private int[] calculate_temp(int[] end_point, int[] jobs) {
 
         int [] temp = new int[end_point.length];
-        temp[0] = jobs[0];
+        temp[0] = jobs[0]+end_point[0];
         for (int i = 1; i < end_point.length; i++) {
             temp [i] = temp[i-1] + jobs[i];
         }
