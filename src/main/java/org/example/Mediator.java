@@ -41,10 +41,6 @@ public class Mediator {
         return newProposal;
     }
     boolean proposeContract( int [] proposal) {
-        int customer_time_proposal = mCustomer.get_time(proposal);
-        int customer_time_contract = mCustomer.get_time(mContract);
-        int supplier_time_proposal = mSupplier.getTime(proposal);
-        int supplier_time_contract = mSupplier.getTime(mContract);
         if(mCustomer.vote(mContract, proposal) && mSupplier.vote(mContract, proposal)) {
             mContract = proposal;
             return true;

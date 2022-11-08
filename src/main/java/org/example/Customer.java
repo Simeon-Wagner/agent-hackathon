@@ -12,13 +12,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Customer {
-
     int [][] jobSequence;
-
     public Customer(int[][] jobSequence) {
         this.jobSequence = jobSequence;
         time_contract = 0;
     }
+
 
     private int time_contract;
 
@@ -46,7 +45,6 @@ public class Customer {
             }
             end_point = temp;
         }
-
         return end_point[end_point.length-1];
     }
 

@@ -29,7 +29,7 @@ public class Main {
         }
     }
 
-    static int[][] loadSupplierMatrix(String path) {
+    public static int[][] loadSupplierMatrix(String path) {
         ArrayList<int[]> list = new ArrayList<>();
         String line = "";
         int[][] timeMatrix;
@@ -54,7 +54,7 @@ public class Main {
         return null;
     }
 
-    static int[][] loadCustomerMatrix(String path) {
+    public static int[][] loadCustomerMatrix(String path) {
         ArrayList<int[]> list = new ArrayList<>();
         String line = "";
         int[][] jobsSequenceMatrix;
