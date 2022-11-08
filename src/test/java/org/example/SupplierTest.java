@@ -1,4 +1,4 @@
-package org.example;
+package example;
 
 import org.junit.jupiter.api.Test;
 import org.testng.Assert;
