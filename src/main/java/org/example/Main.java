@@ -14,11 +14,11 @@ public class Main {
     static int rounds;
 
     public static void main(String[] args) {
-        supplier = new Supplier(loadSupplierMatrix("src/main/resources/datenASupplier_4.txt"));
-        customer = new Customer(loadCustomerMatrix("src/main/resources/datenBCustomer4_3.txt"));
+        supplier = new Supplier(loadSupplierMatrix("src/main/resources/daten5ASupplier_200.txt"));
+        customer = new Customer(loadCustomerMatrix("src/main/resources/daten4ACustomer_200_5.txt"));
         mediator = new Mediator(supplier, customer, amountJobs);
 
-        rounds = 20;
+        rounds = 1000;
         for (int i = 0; i < rounds; i++) {
             int [] proposal = mediator.adjustContractRandomly();
 
