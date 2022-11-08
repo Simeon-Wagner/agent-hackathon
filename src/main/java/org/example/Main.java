@@ -16,15 +16,15 @@ public class Main {
     public static void main(String[] args) {
         supplier = new Supplier(loadSupplierMatrix("src/main/resources/daten5ASupplier_200.txt"));
         customer = new Customer(loadCustomerMatrix("src/main/resources/daten4ACustomer_200_5.txt"));
-        mediator = new Mediator(supplier, customer, amountJobs);
+        IndividualFactory.createFactory(amountJobs);
+        mediator = new Mediator(supplier, customer, amountJobs, 10);
 
         rounds = 1000;
         for (int i = 0; i < rounds; i++) {
-            int [] proposal = mediator.adjustContractRandomly();
-
-            if (mediator.proposeContract(proposal)) {
-
-                System.out.println("Round: " + i + " " + customer.getTime_contract() + "  -   " + supplier.getTime(mediator.getMContract()));
+            if(mediator.proposeContract(mediator.getMPopulation().crossOver().mutate())) {
+                System.out.printf("%-10s%-10s%n","Supplier","Consumer");
+                System.out.println("Round: " + i);
+                System.out.println("\n");
             }
         }
     }
@@ -46,7 +46,7 @@ public class Main {
             for (int i = 0; i < amountJobs; i++) {
                 timeMatrix[i] = list.get(i);
             }
-            printMatrix(timeMatrix);
+//            printMatrix(timeMatrix);
             return timeMatrix;
         } catch (IOException e) {
             e.printStackTrace();
@@ -74,7 +74,7 @@ public class Main {
             for (int i = 0; i < amountJobs; i++) {
                 jobsSequenceMatrix[i] = list.get(i);
             }
-            printMatrix(jobsSequenceMatrix);
+//            printMatrix(jobsSequenceMatrix);
             return jobsSequenceMatrix;
         } catch (IOException e) {
             e.printStackTrace();

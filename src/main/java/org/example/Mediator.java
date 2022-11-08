@@ -1,10 +1,11 @@
 package org.example;
 
+import org.example.IndividualFactory.Individual;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Random;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @Getter
@@ -12,40 +13,34 @@ import java.util.stream.IntStream;
 public class Mediator {
     Supplier mSupplier;
     Customer mCustomer;
+    Population mPopulation;
+    int mPopulationSize;
     int mJobsAmount;
-    int[] mContract;
+    Individual mContract;
 
-    Mediator(Supplier supplier, Customer customer, int jobsAmount) {
+    Mediator(Supplier supplier, Customer customer, int jobsAmount, int populationSize) {
         mCustomer = customer;
         mSupplier = supplier;
         mJobsAmount = jobsAmount;
-        mContract = IntStream.range(0, jobsAmount).toArray();
+        mContract = IndividualFactory.factory.createIndividual().swapGenes(IntStream.range(0, jobsAmount).toArray());
+        mPopulationSize = populationSize;
+        mPopulation = new Population(jobsAmount);
+        mPopulation.createPopulation(populationSize);
     }
 
-    int [] adjustContractRandomly() {
-        Random rand = new Random();
-        int[] newProposal = new int[mContract.length];
-        System.arraycopy(mContract,0,newProposal,0,mContract.length);
-        int job;
-        int index = rand.nextInt(newProposal.length);
-        if(index == newProposal.length - 1) {
-            job = newProposal[index-1];
-            newProposal[index-1] = newProposal[index];
-            newProposal[index] = job;
-        } else {
-            job = newProposal[index+1];
-            newProposal[index+1] = newProposal[index];
-            newProposal[index] = job;
+    boolean proposeContract( Population proposal) {
+        boolean approve = false;
+        for(Individual i : proposal.getMIndividuals()) {
+            if(mCustomer.vote(mContract.getMGenes(), i.getMGenes()) && mSupplier.vote(mContract.getMGenes(), i.getMGenes())) {
+                i.setMApproved(true);
+                mContract.swapGenes(i.getMGenes());
+                System.out.printf("%10d%10d%n", mCustomer.getTime_contract(), mSupplier.getTime(mContract.getMGenes()));
+                approve = true;
+            }
         }
+        mPopulation = proposal;
+        return approve;
+    }
 
-        return newProposal;
-    }
-    boolean proposeContract( int [] proposal) {
-        if(mCustomer.vote(mContract, proposal) && mSupplier.vote(mContract, proposal)) {
-            mContract = proposal;
-            return true;
-        }
-        return false;
-    }
 
 }

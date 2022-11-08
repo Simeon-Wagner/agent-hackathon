@@ -1,33 +1,38 @@
 package org.example;
 
+import org.example.IndividualFactory.Individual;
+
 import org.junit.Test;
 
-import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MediatorTest {
+    static int populationSize;
+
 
     @Test
-    public void createSupplierMatrix() {
-        int[][] supplierMatrix = {
-                {0, 6, 8, 2},
-                {4, 0, 2, 3},
-                {3, 7, 0, 6},
-                {2, 8, 4, 0}};
+    public void testCreatePopulation() {
+        setup();
+        assertEquals(populationSize, Main.mediator.mPopulation.getMIndividuals().size());
+        for(Individual i : Main.mediator.mPopulation.getMIndividuals()) {
+            assertEquals(i.getMGenes().length, Main.mediator.mJobsAmount);
+        }
+    }
+    
 
-        assertTrue(Arrays.deepEquals(supplierMatrix, Main.loadSupplierMatrix("src/main/resources/datenASupplier_4.txt")));
-    }
     @Test
-    public void createCustomerMatrix() {
-        int[][] customerMatrix = {
-                {2, 1, 2},
-                {1, 1, 1},
-                {3, 2, 3},
-                {1, 2, 2}};
-        Main.loadSupplierMatrix("src/main/resources/datenASupplier_4.txt");
-        assertTrue(Arrays.deepEquals(customerMatrix, Main.loadCustomerMatrix("src/main/resources/datenBCustomer4_3.txt")));
+    public void testParentsSize() {
+        assertEquals(0, Main.mediator.getMPopulation().getMIndividuals().size() % 2);
     }
+
+    static void setup() {
+        populationSize = 10;
+        Main.supplier = new Supplier(Main.loadSupplierMatrix("src/main/resources/daten5ASupplier_200.txt"));
+        Main.customer = new Customer(Main.loadCustomerMatrix("src/main/resources/daten4ACustomer_200_5.txt"));
+        IndividualFactory.createFactory(Main.amountJobs);
+        Main.mediator = new Mediator(Main.supplier, Main.customer, Main.amountJobs, populationSize);
+    }
+
 
 }
