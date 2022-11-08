@@ -14,7 +14,6 @@ public class Mediator {
     Customer mCustomer;
     int mJobsAmount;
     int[] mContract;
-    int [] mProposal;
 
     Mediator(Supplier supplier, Customer customer, int jobsAmount) {
         mCustomer = customer;
@@ -23,9 +22,10 @@ public class Mediator {
         mContract = IntStream.range(0, jobsAmount).toArray();
     }
 
-    void adjustContractRandomly() {
+    int [] adjustContractRandomly() {
         Random rand = new Random();
-        int[] newProposal = mContract;
+        int[] newProposal = new int[mContract.length];
+        System.arraycopy(mContract,0,newProposal,0,mContract.length);
         int job;
         int index = rand.nextInt(newProposal.length);
         if(index == newProposal.length - 1) {
@@ -37,12 +37,19 @@ public class Mediator {
             newProposal[index+1] = newProposal[index];
             newProposal[index] = job;
         }
-        mProposal=newProposal;
+
+        return newProposal;
     }
-    void proposeContract() {
-        if(mCustomer.vote(mContract, mProposal) && mSupplier.vote(mContract, mProposal)) {
-            mContract = mProposal;
+    boolean proposeContract( int [] proposal) {
+        int customer_time_proposal = mCustomer.get_time(proposal);
+        int customer_time_contract = mCustomer.get_time(mContract);
+        int supplier_time_proposal = mSupplier.getTime(proposal);
+        int supplier_time_contract = mSupplier.getTime(mContract);
+        if(mCustomer.vote(mContract, proposal) && mSupplier.vote(mContract, proposal)) {
+            mContract = proposal;
+            return true;
         }
+        return false;
     }
 
 }
