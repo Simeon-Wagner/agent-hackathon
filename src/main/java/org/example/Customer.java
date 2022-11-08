@@ -12,24 +12,49 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Customer {
+
     int [][] jobSequence;
+    double mustAccept;
+    int time_contract;
+    int roundNr;
+    int rounds;
+    int roundsAccepted;
     public Customer(int[][] jobSequence) {
         this.jobSequence = jobSequence;
         time_contract = 0;
     }
-
-
-    private int time_contract;
+    public Customer (int [][] jobSequence, int rounds, double mustAccept){
+        this.jobSequence = jobSequence;
+        time_contract = 0 ;
+        this.rounds = rounds;
+        this.mustAccept = mustAccept;
+        this.roundNr = 0;
+    }
 
     public void set_contract(int [] contract){
         time_contract = get_time(contract);
     }
     public boolean vote (int [] contract, int [] proposal){
         set_contract(contract);
-        if( get_time(proposal) < time_contract){
+        roundNr++;
+        int timeP = get_time(proposal);
+        int timeC = get_time(contract);
+        double relDif = (timeP-timeC)/timeC;
+        if(timeP<timeC) {
+            roundsAccepted++;
             return true;
+        } else if (getAcceptanceRate()<mustAccept&&(relDif<0.1)) {
+            roundsAccepted++;
+            return true;
+        }else if((rounds-roundNr)==(rounds*mustAccept-roundsAccepted)) {
+            roundsAccepted++;
+            return true;
+        }else {
+            return false;
         }
-        return false;
+    }
+    private double getAcceptanceRate (){
+        return roundsAccepted/roundNr;
     }
     public int get_time( int [] proposal){
         //Zeilen sind Jobs
@@ -45,6 +70,7 @@ public class Customer {
             }
             end_point = temp;
         }
+
         return end_point[end_point.length-1];
     }
 
@@ -76,5 +102,4 @@ public class Customer {
         }
         return true;
     }
-
 }
