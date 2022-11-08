@@ -1,7 +1,8 @@
-package example;
+package org.example;
 
 import org.junit.jupiter.api.Test;
 import org.testng.Assert;
+
 
 public class SupplierTest {
     int [][] matrix = {{0, 6, 8, 2}, {4, 0, 2, 3},{3, 7, 0, 6},{2, 8, 4, 0}};
