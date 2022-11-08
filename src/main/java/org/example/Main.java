@@ -23,7 +23,7 @@ public class Main {
             int [] proposal = mediator.adjustContractRandomly();
 
             if (mediator.proposeContract(proposal)) {
-                Arrays.stream(proposal).forEach(x -> System.out.print(x + " "));
+
                 System.out.println("Round: " + i + " " + customer.getTime_contract() + "  -   " + supplier.getTime(mediator.getMContract()));
             }
         }
