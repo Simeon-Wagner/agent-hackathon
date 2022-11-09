@@ -9,47 +9,47 @@ public class Supplier {
         this.mustAccept = mustAccept;
         this.roundNr = 0;
         this.roundsAccepted = 0;
+        this.variable = 1;
+        this.canDeny = 1-mustAccept;
+        this.decrement = 1/(rounds*canDeny);
     }
     public Supplier(int[][] costMatrix) {
         this.costMatrix = costMatrix;
     }
-    public void setCostMatrix(int[][] costMatrix) {
-        this.costMatrix = costMatrix ;
-    }
+
     private int [][]costMatrix;
     int rounds;
     int roundNr;
     int roundsAccepted;
     double mustAccept;
-    public  int getTime(int [] proposal) {
-        int time = 0;
+
+    double variable;
+    double canDeny;
+    double decrement;
+
+    public  double getTime(Integer [] proposal) {
+        double time = 0;
         for(int i = 0; i< proposal.length-1; i++){
             time += (costMatrix[proposal[i]][proposal[i+1]]);
         }
         return time;
     }
-    public boolean vote(int [] contract, int[] proposal){
+    public boolean vote(Integer [] contract, Integer[] proposal){
         roundNr++;
-        int timeP = getTime(proposal);
-        int timeC = getTime(contract);
-        double relDif = (timeP-timeC)/timeC;
-        if(timeP<timeC) {
+        double quotient_x = (getTime(proposal)- getTime(contract))/getTime(contract);
+        double exponent =(-quotient_x*variable)*20; //*6.5
+        double result = Math.pow(Math.E,exponent);
+        double random = Math.random();
+        if(random <= result){
             roundsAccepted++;
             return true;
-        } else if (getAcceptanceRate()<mustAccept&&(relDif<0.1)) {
-            roundsAccepted++;
-            return true;
-        }else if((rounds-roundNr)==(rounds*mustAccept-roundsAccepted)) {
-            roundsAccepted++;
-            return true;
-        }else {
+        }else{
+            variable = variable - decrement;
             return false;
         }
     }
     double getAcceptanceRate (){
         return roundsAccepted/roundNr;
     }
-  /*  public boolean vote (int [] contract, int[] proposal){
-        return getTime(proposal) < getTime(contract);
-    }*/
+
 }

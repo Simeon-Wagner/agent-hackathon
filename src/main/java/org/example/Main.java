@@ -11,19 +11,25 @@ public class Main {
     static Supplier supplier;
     static Customer customer;
     static Mediator mediator;
+
     static int rounds;
 
     public static void main(String[] args) {
-        supplier = new Supplier(loadSupplierMatrix("src/main/resources/daten5ASupplier_200.txt"));
-        customer = new Customer(loadCustomerMatrix("src/main/resources/daten4ACustomer_200_5.txt"));
-        IndividualFactory.createFactory(amountJobs);
-        mediator = new Mediator(supplier, customer, amountJobs, 10);
+        rounds = 100;
+        supplier = new Supplier(loadSupplierMatrix("src/main/resources/daten5ASupplier_200.txt"),
+                rounds,0.5);
+        customer = new Customer(loadCustomerMatrix("src/main/resources/daten4ACustomer_200_5.txt"),
+                rounds, 0.5);
 
-        rounds = 1000;
+        mediator = new Mediator(customer, supplier, amountJobs, rounds, 0.5);
+
+
+
         for (int i = 0; i < rounds; i++) {
-            if(mediator.proposeContract(mediator.getMPopulation().crossOver().mutate())) {
+
+            if(mediator.accepted()) {
                 System.out.printf("%-10s%-10s%n","Supplier","Consumer");
-                System.out.println("Round: " + i);
+                System.out.print("Round: " + i + "\t"+ supplier.getTime(mediator.contract)+ "\t"+ customer.get_time(mediator.contract));
                 System.out.println("\n");
             }
         }

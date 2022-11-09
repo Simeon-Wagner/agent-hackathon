@@ -1,46 +1,57 @@
 package org.example;
 
-import org.example.IndividualFactory.Individual;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.*;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class Mediator {
-    Supplier mSupplier;
-    Customer mCustomer;
-    Population mPopulation;
-    int mPopulationSize;
-    int mJobsAmount;
-    Individual mContract;
+    Customer customer;
+    Supplier supplier;
+    int jobsAmount;
+    int rounds;
+    double canAccept;
+    Integer [] contract;
 
-    Mediator(Supplier supplier, Customer customer, int jobsAmount, int populationSize) {
-        mCustomer = customer;
-        mSupplier = supplier;
-        mJobsAmount = jobsAmount;
-        mContract = IndividualFactory.factory.createIndividual().swapGenes(IntStream.range(0, jobsAmount).toArray());
-        mPopulationSize = populationSize;
-        mPopulation = new Population(jobsAmount);
-        mPopulation.createPopulation(populationSize);
+
+
+    public Mediator(Customer customer, Supplier supplier, int jobsAmount, int rounds, double canAccept) {
+        this.customer = customer;
+        this.supplier = supplier;
+        this.jobsAmount = jobsAmount;
+        this.rounds = rounds;
+        this.canAccept = canAccept;
+        this.contract = IntStream.range(0,jobsAmount).boxed().toArray(Integer[] :: new);
     }
 
-    boolean proposeContract( Population proposal) {
-        boolean approve = false;
-        for(Individual i : proposal.getMIndividuals()) {
-            if(mCustomer.vote(mContract.getMGenes(), i.getMGenes()) && mSupplier.vote(mContract.getMGenes(), i.getMGenes())) {
-                i.setMApproved(true);
-                mContract.swapGenes(i.getMGenes());
-                System.out.printf("%10d%10d%n", mCustomer.getTime_contract(), mSupplier.getTime(mContract.getMGenes()));
-                approve = true;
+    public Integer [] mutate_contract(Integer [] contract){
+        Integer [] proposal = Arrays.copyOf(contract, contract.length);
+        double mutational_constant = 0.1;
+        int index = 0;
+        for (int i = 0; i < proposal.length; i++) {
+            if(Math.random() <= mutational_constant){
+                do {
+                    index = (int) (Math.random() * contract.length);
+                }while(index == i);
+                Integer temp = proposal[i];
+                proposal[i]= proposal[index];
+                proposal[index]= temp;
             }
         }
-        mPopulation = proposal;
-        return approve;
+        return proposal;
     }
 
-
+    public boolean accepted(){
+        Integer [] proposal = mutate_contract(contract);
+        if(customer.vote(proposal,contract) && supplier.vote(proposal,contract) ){
+            this.contract = proposal;
+            return true;
+        }
+        return false;
+    }
 }

@@ -19,6 +19,7 @@ public class Customer {
     int roundNr;
     int rounds;
     int roundsAccepted;
+
     public Customer(int[][] jobSequence) {
         this.jobSequence = jobSequence;
         time_contract = 0;
@@ -29,12 +30,13 @@ public class Customer {
         this.rounds = rounds;
         this.mustAccept = mustAccept;
         this.roundNr = 0;
+
     }
 
-    public void set_contract(int [] contract){
+    public void set_contract(Integer [] contract){
         time_contract = get_time(contract);
     }
-    public boolean vote (int [] contract, int [] proposal){
+    public boolean vote (Integer [] contract, Integer [] proposal){
         set_contract(contract);
         roundNr++;
         int timeP = get_time(proposal);
@@ -56,7 +58,7 @@ public class Customer {
     private double getAcceptanceRate (){
         return roundsAccepted/roundNr;
     }
-    public int get_time( int [] proposal){
+    public int get_time( Integer [] proposal){
         //Zeilen sind Jobs
 
         int [] end_point = calculate_end_point(jobSequence[proposal[0]]);
